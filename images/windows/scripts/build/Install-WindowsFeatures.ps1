@@ -3,6 +3,17 @@
 ##  Desc:  Install Windows Features
 ####################################################################################
 
+# Check if a reboot is required
+$rebootPending = Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootRequired"
+
+if ($rebootPending) {
+    Write-Host "Reboot is required to complete previous installations."
+    Restart-Computer -Force -Wait
+    Write-Host "System rebooted successfully."
+    # Exit the script to allow Packer to handle the reboot
+    exit
+}
+
 $windowsFeatures = (Get-ToolsetContent).windowsFeatures
 
 foreach ($feature in $windowsFeatures) {
@@ -35,4 +46,13 @@ foreach ($feature in $windowsFeatures) {
 bcdedit /set hypervisorschedulertype root
 if ($LASTEXITCODE -ne 0) {
     throw "Failed to set hypervisorschedulertype to root"
+}
+
+# Check if a reboot is required after installing features
+$rebootPending = Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootRequired"
+
+if ($rebootPending) {
+    Write-Host "Reboot is required to complete feature installations."
+    Restart-Computer -Force -Wait
+    Write-Host "System rebooted successfully."
 }
