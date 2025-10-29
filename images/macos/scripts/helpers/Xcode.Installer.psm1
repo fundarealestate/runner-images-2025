@@ -42,46 +42,6 @@ function Invoke-DownloadXcodeArchive {
     return $tempXipDirectory
 }
 
-function Resolve-ExactXcodeVersion {
-    param (
-        [Parameter(Mandatory)]
-        [string] $Version
-    )
-
-    # if toolset string contains spaces, consider it as a full name of Xcode
-    if ($Version -match "\s") {
-        return $Version
-    }
-
-    $semverVersion = [SemVer]::Parse($Version)
-    $availableVersions = Get-AvailableXcodeVersions
-    $satisfiedVersions = $availableVersions | Where-Object { $semverVersion -eq $_.stableSemver }
-
-    return $satisfiedVersions | Select-Object -Last 1 -ExpandProperty rawVersion
-}
-
-function Get-AvailableXcodeVersions {
-    $rawVersionsList = Invoke-XCVersion -Arguments "list" | ForEach-Object { $_.Trim() } | Where-Object { $_ -match "^\d" }
-    $availableVersions = $rawVersionsList | ForEach-Object {
-        $partStable,$partMajor = $_.Split(" ", 2)
-        $semver = $stableSemver = [SemVer]::Parse($partStable)
-
-        if ($partMajor) {
-            # Convert 'beta 3' -> 'beta.3', 'Release Candidate' -> 'releasecandidate', 'GM Seed 2' -> 'gmseed.2'
-            $normalizedLabel = $partMajor.toLower() -replace " (\d)", '.$1' -replace " ([a-z])", '$1'
-            $semver = [SemVer]::new($stableSemver.Major, $stableSemver.Minor, $stableSemver.Patch, $normalizedLabel)
-        }
-
-        return [PSCustomObject]@{
-            semver = $semver
-            rawVersion = $_
-            stableSemver = $stableSemver
-        }
-    }
-
-    return $availableVersions | Sort-Object -Property semver
-}
-
 function Expand-XcodeXipArchive {
     param (
         [Parameter(Mandatory)]
@@ -145,18 +105,16 @@ function Approve-XcodeLicense {
     }
 }
 
-function Install-XcodeAdditionalPackages {
+function Install-XcodeAdditionalComponents {
     param (
         [Parameter(Mandatory)]
         [string] $Version
     )
 
-    Write-Host "Installing additional packages for Xcode $Version..."
+    Write-Host "Installing additional MetalToolchain component for Xcode $Version..."
     $xcodeRootPath = Get-XcodeRootPath -Version $Version
-    $packages = Get-ChildItem -Path "$xcodeRootPath/Contents/Resources/Packages" -Filter "*.pkg" -File
-    $packages | ForEach-Object {
-        Invoke-ValidateCommand "sudo installer -pkg $($_.FullName) -target / -allowUntrusted"
-    }
+    $xcodeBuildPath = Get-XcodeToolPath -XcodeRootPath $xcodeRootPath -ToolName "xcodebuild"
+    Invoke-ValidateCommand "$xcodeBuildPath -downloadComponent MetalToolchain" | Out-Null
 }
 
 function Invoke-XcodeRunFirstLaunch {
@@ -170,7 +128,7 @@ function Invoke-XcodeRunFirstLaunch {
     Invoke-ValidateCommand "sudo $xcodeRootPath -runFirstLaunch"
 }
 
-function Install-AdditionalSimulatorRuntimes {
+function Install-XcodeAdditionalSimulatorRuntimes {
     param (
         [Parameter(Mandatory)]
         [string] $Version,
@@ -356,5 +314,25 @@ function Invoke-ValidateCommand {
              throw "Command '$Command' has failed"
         }
         Receive-Job -Job $job
+    }
+}
+
+function Update-DyldCache {
+    param (
+        [Parameter(Mandatory)]
+        [array] $XcodeVersions
+    )
+
+    # Find the latest stable Xcode version (excluding beta and RC versions)
+    $latestStableXcode = $XcodeVersions | Where-Object { 
+        -not ($_.link.Contains("beta") -or $_.link.Contains("Release_Candidate") -or $_.link.Contains("_RC"))
+    } | Sort-Object { [version]($_.version -split '\+')[0] } -Descending | Select-Object -First 1
+
+    if ($latestStableXcode) {
+        Write-Host "Updating dyld shared cache for Xcode $($latestStableXcode.link)..."
+        Switch-Xcode -Version $latestStableXcode.link
+        Invoke-ValidateCommand "xcrun simctl runtime dyld_shared_cache update --all"
+    } else {
+        Write-Host "No stable Xcode version found for dyld cache update."
     }
 }

@@ -21,7 +21,8 @@
                 "3.10.*",
                 "3.11.*",
                 "3.12.*",
-                "3.13.*"
+                "3.13.*",
+                "3.14.*"
             ],
             "default": "3.9.*"
         },
@@ -70,7 +71,8 @@
             "versions": [
                 "1.22.*",
                 "1.23.*",
-                "1.24.*"
+                "1.24.*",
+                "1.25.*"
             ],
             "default": "1.24.*"
         }
@@ -282,13 +284,7 @@
             "Microsoft.VisualStudio.Component.VC.v141.MFC.ARM64.Spectre",
             "Microsoft.VisualStudio.Component.VC.v141.MFC.Spectre",
             "Microsoft.VisualStudio.Component.VC.14.25.x86.x64",
-            "Microsoft.VisualStudio.Component.Windows10SDK.16299",
-            "Microsoft.VisualStudio.Component.Windows10SDK.17134",
-            "Microsoft.VisualStudio.Component.Windows10SDK.17763",
-            "Microsoft.VisualStudio.Component.Windows10SDK.18362",
             "Microsoft.VisualStudio.Component.Windows10SDK.19041",
-            "Microsoft.VisualStudio.Component.Windows10SDK.20348",
-            "Microsoft.VisualStudio.Component.Windows11SDK.22000",
             "Microsoft.VisualStudio.Component.WinXP",
             "Microsoft.VisualStudio.Component.Workflow",
             "Microsoft.VisualStudio.ComponentGroup.Azure.CloudServices",
@@ -442,17 +438,17 @@
     "kotlin": {
         "version": "2.1.10",
         "pinnedDetails": {
-            "link": "https://youtrack.jetbrains.com/issues/KT?preview=KT-76169",
-            "reason": "this was pinned due to a new version 2.1.20 released has an issue with kotlinc-js -version` and kapt -version",
-            "review-at": "2025-03-31"
+            "link": "https://github.com/actions/runner-images/issues/12045",
+            "reason": "Image is deprecated and will be removed soon",
+            "review-at": "2027-01-01"
         }
     },
     "openssl": {
         "version": "1.1.1",
         "pinnedDetails": {
-            "link": "https://github.com/somelink",
-            "reason": "this was pinned due to a downstream issue with the installer",
-            "review-at": "2025-01-30"
+            "link": "https://github.com/actions/runner-images/issues/12045",
+            "reason": "Image is deprecated and will be removed soon",
+            "review-at": "2027-01-01"
         }
     },
     "pwsh": {
