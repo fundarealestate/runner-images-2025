@@ -18,6 +18,7 @@ foreach ($feature in $windowsFeatures) {
             IncludeAllSubFeature   = [System.Convert]::ToBoolean($feature.includeAllSubFeatures)
             IncludeManagementTools = [System.Convert]::ToBoolean($feature.includeManagementTools)
             Verbose                = $true
+            Debug                  = $true
         }
         $result = Install-WindowsFeature @arguments
 
