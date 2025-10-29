@@ -12,7 +12,7 @@ foreach ($feature in $windowsFeatures) {
 
         $resultSuccess = $?
     } else {
-        Write-Host "Activating Windows Feature '$($feature.name)'..."
+        Write-Host "Activating Windows Feature '$($feature.name)'... (30m)"
         $arguments = @{
             Name                   = $feature.name
             IncludeAllSubFeature   = [System.Convert]::ToBoolean($feature.includeAllSubFeatures)
