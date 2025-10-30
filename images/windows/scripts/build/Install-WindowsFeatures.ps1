@@ -5,8 +5,8 @@
 
 $windowsFeatures = (Get-ToolsetContent).windowsFeatures
 
-Write-Host "Starting DISM tail..."
-$TailProc = Start-Process powershell -ArgumentList '-NoProfile', '-Command', 'Get-Content "C:\Windows\Logs\DISM\dism.log" -Tail 10 -Wait' -PassThru
+Write-Host "Starting CBS tail..."
+$TailProc = Start-Process powershell -ArgumentList '-NoProfile', '-Command', 'Get-Content "C:\Windows\Logs\CBS\CBS.log" -Tail 20 -Wait' -PassThru
 
 foreach ($feature in $windowsFeatures) {
     if ($feature.optionalFeature) {
@@ -42,5 +42,5 @@ if ($LASTEXITCODE -ne 0) {
     throw "Failed to set hypervisorschedulertype to root"
 }
 
-Write-Host "Stopping DISM tail..."
+Write-Host "Stopping CBS tail..."
 Stop-Process -Id $TailProc.Id
