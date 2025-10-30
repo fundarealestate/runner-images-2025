@@ -38,18 +38,49 @@ build {
     ]
   }
 
-  provisioner "windows-shell" {
-    inline = [
-      "net user ${var.install_user} ${var.install_password} /add /passwordchg:no /passwordreq:yes /active:yes /Y",
-      "net localgroup Administrators ${var.install_user} /add",
-      "winrm set winrm/config/service/auth @{Basic=\"true\"}",
-      "winrm get winrm/config/service/auth"
-    ]
-  }
+# --- Windows user creation + admin setup ---
+provisioner "powershell" {
+  inline = [
+    # Stop on any error
+    "$ErrorActionPreference = 'Stop'",
+    "$VerbosePreference = 'Continue'",
 
-  provisioner "powershell" {
-    inline = ["if (-not ((net localgroup Administrators) -contains '${var.install_user}')) { exit 1 }"]
-  }
+    # Create user
+    "Write-Host 'Creating user ${var.install_user}...'",
+    "if (-not (Get-LocalUser -Name '${var.install_user}' -ErrorAction SilentlyContinue)) {",
+    "    New-LocalUser -Name '${var.install_user}' -Password (ConvertTo-SecureString '${var.install_password}' -AsPlainText -Force) -PasswordNeverExpires:$true -AccountNeverExpires:$true",
+    "} else {",
+    "    Write-Host 'User already exists.'",
+    "}",
+
+    # Add to Administrators group
+    "Write-Host 'Adding user to Administrators group...'",
+    "Add-LocalGroupMember -Group 'Administrators' -Member '${var.install_user}' -ErrorAction Stop",
+
+    # Enable Basic auth for WinRM
+    "Write-Host 'Enabling WinRM Basic authentication...'",
+    "winrm set winrm/config/service/auth @{Basic='true'}",
+    "winrm get winrm/config/service/auth"
+  ]
+}
+
+# --- Verify user is in Administrators group ---
+provisioner "powershell" {
+  inline = [
+    "$ErrorActionPreference = 'Stop'",
+    "$VerbosePreference = 'Continue'",
+
+    "Write-Host 'Verifying ${var.install_user} is in Administrators group...'",
+
+    "if (-not ((Get-LocalGroupMember -Group 'Administrators').Name -contains '${var.install_user}')) {",
+    "    Write-Error 'User ${var.install_user} is NOT in Administrators group!'",
+    "    exit 1",
+    "} else {",
+    "    Write-Host 'User ${var.install_user} verified as Administrator.'",
+    "}"
+  ]
+}
+
 
 provisioner "powershell" {
     elevated_password = "${var.install_password}"
