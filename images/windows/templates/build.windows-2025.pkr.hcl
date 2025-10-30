@@ -58,7 +58,11 @@ provisioner "powershell" {
 
     # Enable WinRM Basic authentication
     "Write-Host 'Enabling WinRM Basic authentication...'",
-    "winrm quickconfig -q",
+    "Write-Host 'Ensuring WinRM is configured...'",
+    "Start-Service WinRM -ErrorAction Stop",
+    "$listener = winrm enumerate winrm/config/listener | Select-String 'Transport = HTTP'",
+    "if (-not $listener) { winrm create winrm/config/Listener?Address=*+Transport=HTTP }",
+    "Start-Sleep 10",
     "winrm set winrm/config/service/auth @{Basic=\"true\"}",
     "winrm get winrm/config/service/auth",
 
@@ -70,8 +74,6 @@ provisioner "powershell" {
     "} else { Write-Host 'User ${var.install_user} verified as Administrator.' }"
   ]
 }
-
-
 
 provisioner "powershell" {
     elevated_password = "${var.install_password}"
