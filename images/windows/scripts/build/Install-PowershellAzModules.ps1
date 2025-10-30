@@ -16,6 +16,39 @@ $modules = (Get-ToolsetContent).azureModules
 
 $psModuleMachinePath = ""
 
+# Set TLS 1.2 for PowerShellGet/PackageManagement
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+Write-Host "Configured PowerShell to use TLS 1.2"
+
+# Register or fix PSGallery repository to use API v3 endpoint
+try {
+    $repo = Get-PSRepository -Name "PSGallery" -ErrorAction SilentlyContinue
+    if ($null -eq $repo) {
+        Write-Host "Registering PSGallery repository (v3 endpoint)..."
+        Register-PSRepository -Name "PSGallery" -SourceLocation "https://www.powershellgallery.com/api/v3" -InstallationPolicy Trusted
+    }
+    elseif ($repo.SourceLocation -notmatch "/api/v3$") {
+        Write-Host "Updating PSGallery repository to use v3 endpoint..."
+        Set-PSRepository -Name "PSGallery" -SourceLocation "https://www.powershellgallery.com/api/v3" -InstallationPolicy Trusted
+    }
+    else {
+        Write-Host "PSGallery repository is configured correctly."
+    }
+}
+catch {
+    Write-Error "Failed to register or update PSGallery repository: $_"
+    exit 1
+}
+
+Write-Host "Ensuring latest PowerShellGet and PackageManagement modules..."
+Try {
+    Install-Module PowerShellGet -Force -Scope AllUsers -ErrorAction Stop
+    Install-Module PackageManagement -Force -Scope AllUsers -ErrorAction Stop
+}
+Catch {
+    Write-Warning "Could not update PowerShellGet/PackageManagement – continuing anyway: $_"
+}
+
 foreach ($module in $modules) {
     $moduleName = $module.name
 
