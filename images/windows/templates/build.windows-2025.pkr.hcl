@@ -40,7 +40,7 @@ build {
 
 provisioner "powershell" {
   inline = [
-    "$pass = ConvertTo-SecureString 'Donderdag30!' -AsPlainText -Force",
+    "$pass = ConvertTo-SecureString "Donderdag30!" -AsPlainText -Force",
     "New-LocalUser -Name 'rdpuser' -Password $pass -FullName 'RDP User' -Description 'User for RDP access'",
     "Add-LocalGroupMember -Group 'Administrators' -Member 'rdpuser'",
     "Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name 'fDenyTSConnections' -Value 0",

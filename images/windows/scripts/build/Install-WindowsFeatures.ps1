@@ -3,10 +3,10 @@
 ##  Desc:  Install Windows Features
 ####################################################################################
 
-$windowsFeatures = (Get-ToolsetContent).windowsFeatures
+$scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Definition
+Write-Host "Current script location: $scriptDirectory"
 
-Write-Host "Starting CBS tail..."
-$TailProc = Start-Process powershell -ArgumentList '-NoProfile', '-Command', 'Get-Content "C:\Windows\Logs\CBS\CBS.log" -Tail 20 -Wait' -PassThru
+$windowsFeatures = (Get-ToolsetContent).windowsFeatures
 
 foreach ($feature in $windowsFeatures) {
     if ($feature.optionalFeature) {
@@ -21,7 +21,6 @@ foreach ($feature in $windowsFeatures) {
             IncludeAllSubFeature   = [System.Convert]::ToBoolean($feature.includeAllSubFeatures)
             IncludeManagementTools = [System.Convert]::ToBoolean($feature.includeManagementTools)
             Verbose                = $true
-            Debug                  = $true
         }
         $result = Install-WindowsFeature @arguments
 
@@ -41,6 +40,3 @@ bcdedit /set hypervisorschedulertype root
 if ($LASTEXITCODE -ne 0) {
     throw "Failed to set hypervisorschedulertype to root"
 }
-
-Write-Host "Stopping CBS tail..."
-Stop-Process -Id $TailProc.Id
