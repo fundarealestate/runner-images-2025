@@ -5,6 +5,9 @@
 
 $windowsFeatures = (Get-ToolsetContent).windowsFeatures
 
+Write-Host "Starting DISM tail..."
+$TailProc = Start-Process powershell -ArgumentList '-NoProfile', '-Command', 'Get-Content "C:\Windows\Logs\DISM\dism.log" -Tail 10 -Wait' -PassThru
+
 foreach ($feature in $windowsFeatures) {
     if ($feature.optionalFeature) {
         Write-Host "Activating Windows Optional Feature '$($feature.name)'..."
@@ -38,3 +41,6 @@ bcdedit /set hypervisorschedulertype root
 if ($LASTEXITCODE -ne 0) {
     throw "Failed to set hypervisorschedulertype to root"
 }
+
+Write-Host "Stopping DISM tail..."
+Stop-Process -Id $TailProc.Id
