@@ -41,26 +41,22 @@ build {
 # --- Windows user creation + admin setup ---
 provisioner "powershell" {
   inline = [
-    # Stop on any error
     "$ErrorActionPreference = 'Stop'",
     "$VerbosePreference = 'Continue'",
 
-    # Create user if not exists
     "Write-Host 'Creating user ${var.install_user}...'",
     "if (-not (Get-LocalUser -Name '${var.install_user}' -ErrorAction SilentlyContinue)) {",
     "    New-LocalUser -Name '${var.install_user}' -Password (ConvertTo-SecureString '${var.install_password}' -AsPlainText -Force) -PasswordNeverExpires:$true -AccountNeverExpires:$true",
     "} else { Write-Host 'User already exists.' }",
 
-    # Add user to Administrators
     "Write-Host 'Adding user to Administrators group...'",
     "Add-LocalGroupMember -Group 'Administrators' -Member '${var.install_user}' -ErrorAction Stop",
 
-    # Enable WinRM Basic authentication
     "Write-Host 'Enabling WinRM Basic authentication...'",
-    "Set-Item -Path WSMan:\\\\localhost\\\\Service\\\\Auth\\\\Basic -Value `$true",
-    "Get-Item WSMan:\\\\localhost\\\\Service\\\\Auth\\\\Basic",
+    "& winrm quickconfig -q",
+    "& winrm set winrm/config/service/auth @{Basic=`\"true`\"}",
+    "& winrm get winrm/config/service/auth",
 
-    # Verify user is in Administrators group
     "Write-Host 'Verifying ${var.install_user} is in Administrators group...'",
     "if (-not ((Get-LocalGroupMember -Group 'Administrators').Name -like '*${var.install_user}')) {",
     "    Write-Error 'User ${var.install_user} is NOT in Administrators group!'",
@@ -68,6 +64,7 @@ provisioner "powershell" {
     "} else { Write-Host 'User ${var.install_user} verified as Administrator.' }"
   ]
 }
+
 
 provisioner "powershell" {
     elevated_password = "${var.install_password}"
