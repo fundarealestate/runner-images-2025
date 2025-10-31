@@ -46,7 +46,7 @@ Try {
     Install-Module PackageManagement -Force -Scope AllUsers -ErrorAction Stop
 }
 Catch {
-    Write-Warning "Could not update PowerShellGet/PackageManagement – continuing anyway: $_"
+    Write-Warning "Could not update PowerShellGet/PackageManagement - continuing anyway: $_"
 }
 
 foreach ($module in $modules) {
