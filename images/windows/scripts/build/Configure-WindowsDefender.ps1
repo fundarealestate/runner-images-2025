@@ -70,7 +70,7 @@ if ($hasDefender) {
     } catch {
             Write-Warning "  (!) Skipped '$keys' - $($_.Exception.Message)"
         }
-
+    }
 
 # Passive mode for MDE
 $atpRegPath = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows Advanced Threat Protection'
