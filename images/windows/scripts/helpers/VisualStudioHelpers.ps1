@@ -68,7 +68,7 @@ Function Install-VisualStudio {
 
         $installStartTime = Get-Date
         Write-Host "Starting Install ..."
-        $bootstrapperArgumentList = ('/c', $bootstrapperFilePath, '--in', $responseDataPath, $ExtraArgs, '--quiet', '--norestart', '--wait', '--nocache' )
+        $bootstrapperArgumentList = ('/c', $bootstrapperFilePath, '--in', $responseDataPath, $ExtraArgs, '--passive', '--norestart', '--wait', '--nocache' )
         Write-Host "Bootstrapper arguments: $bootstrapperArgumentList"
         $process = Start-Process -FilePath cmd.exe -ArgumentList $bootstrapperArgumentList -Wait -PassThru
 
