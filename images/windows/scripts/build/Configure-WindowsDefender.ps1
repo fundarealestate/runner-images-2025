@@ -97,5 +97,5 @@ if ($startedDefender) {
         Write-Warning "  (!) Could not stop Defender service: $($_.Exception.Message)"
     }
 }
-
+}
 Write-Host "=== Windows Defender configuration completed ==="

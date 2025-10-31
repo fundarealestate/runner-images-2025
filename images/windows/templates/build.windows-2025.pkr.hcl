@@ -71,10 +71,8 @@ provisioner "powershell" {
     "Write-Host 'Enabling WinRM Basic authentication...'",
     "Write-Host 'Ensuring WinRM is configured...'",
     "Start-Service WinRM -ErrorAction Stop",
-    "$listener = winrm enumerate winrm/config/listener | Select-String 'Transport = HTTP'",
-    "if (-not $listener) { winrm create winrm/config/Listener?Address=*+Transport=HTTP }",
-    "Start-Sleep 10",
-    "winrm set winrm/config/service/auth @{Basic=\"true\"}",
+    "winrm create winrm/config/Listener?Address=*+Transport=HTTP",
+    "Set-Item WSMan:\localhost\Service\Auth\Basic -Value $true",
     "winrm get winrm/config/service/auth",
 
     # Verify user is in Administrators group
