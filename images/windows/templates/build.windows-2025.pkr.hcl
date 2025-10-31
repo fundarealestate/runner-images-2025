@@ -72,7 +72,7 @@ provisioner "powershell" {
     "Write-Host 'Ensuring WinRM is configured...'",
     "Start-Service WinRM -ErrorAction Stop",
     "winrm create winrm/config/Listener?Address=*+Transport=HTTP",
-    "Set-Item WSMan:\localhost\Service\Auth\Basic -Value $true",
+    "Set-Item WSMan:/localhost/Service/Auth/Basic -Value $true",
     "winrm get winrm/config/service/auth",
 
     # Verify user is in Administrators group
