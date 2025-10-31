@@ -20,25 +20,55 @@ $psModuleMachinePath = ""
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Write-Host "Configured PowerShell to use TLS 1.2"
 
-# Register or fix PSGallery repository to use API v3 endpoint
+# Ensure NuGet provider is available
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -ErrorAction SilentlyContinue
+Import-PackageProvider -Name NuGet -ErrorAction SilentlyContinue
+
+# Clear any cached, broken repository entries
+Unregister-PSRepository -Name "PSGallery" -ErrorAction SilentlyContinue
+
+
+# Register or fix PSGallery repository
 try {
     $repo = Get-PSRepository -Name "PSGallery" -ErrorAction SilentlyContinue
+
+    $psGalleryV2 = "https://www.powershellgallery.com/api/v2"
+    $psGalleryV3 = "https://www.powershellgallery.com/api/v3"
+
     if ($null -eq $repo) {
-        Write-Host "Registering PSGallery repository (v3 endpoint)..."
-        Register-PSRepository -Name "PSGallery" -SourceLocation "https://www.powershellgallery.com/api/v3" -InstallationPolicy Trusted
+        Write-Host "Registering PSGallery repository (v2 endpoint for compatibility)..."
+        Register-PSRepository -Name "PSGallery" `
+            -SourceLocation $psGalleryV2 `
+            -ScriptSourceLocation $psGalleryV2 `
+            -InstallationPolicy Trusted
     }
-    elseif ($repo.SourceLocation -notmatch "/api/v3$") {
-        Write-Host "Updating PSGallery repository to use v3 endpoint..."
-        Set-PSRepository -Name "PSGallery" -SourceLocation "https://www.powershellgallery.com/api/v3" -InstallationPolicy Trusted
+    elseif ($repo.SourceLocation -ne $psGalleryV2 -and $repo.SourceLocation -ne $psGalleryV3) {
+        Write-Host "Updating PSGallery repository to use v2 endpoint..."
+        Set-PSRepository -Name "PSGallery" `
+            -SourceLocation $psGalleryV2 `
+            -ScriptSourceLocation $psGalleryV2 `
+            -InstallationPolicy Trusted
     }
     else {
-        Write-Host "PSGallery repository is configured correctly."
+        Write-Host "PSGallery repository is configured correctly: $($repo.SourceLocation)"
     }
 }
 catch {
-    Write-Error "Failed to register or update PSGallery repository: $_"
-    exit 1
+    Write-Warning "Failed to register or update PSGallery repository: $($_.Exception.Message)"
+    Write-Host "Falling back to v2 endpoint..."
+    try {
+        Unregister-PSRepository -Name "PSGallery" -ErrorAction SilentlyContinue
+        Register-PSRepository -Name "PSGallery" `
+            -SourceLocation "https://www.powershellgallery.com/api/v2" `
+            -ScriptSourceLocation "https://www.powershellgallery.com/api/v2" `
+            -InstallationPolicy Trusted
+    }
+    catch {
+        Write-Error "Still failed to configure PSGallery: $($_.Exception.Message)"
+        exit 1
+    }
 }
+
 
 Write-Host "Ensuring latest PowerShellGet and PackageManagement modules..."
 Try {
