@@ -1,10 +1,43 @@
 ################################################################################
 ##  File:  Configure-WindowsDefender.ps1
-##  Desc:  Disables Windows Defender
+##  Desc:  Safely disables or skips Windows Defender configuration on
+##         Windows Server 2025 / Azure base images.
 ################################################################################
 
-Write-Host "Disable Windows Defender..."
-$avPreference = @(
+Write-Host "=== Configure Windows Defender ==="
+
+$startedDefender = $false
+$hasDefender = $false
+
+# Detect Defender service
+$defenderService = Get-Service -Name WinDefend -ErrorAction SilentlyContinue
+
+if ($null -eq $defenderService) {
+    Write-Host "[Info] Windows Defender service not found. Likely managed by MDE or removed."
+} else {
+    $hasDefender = $true
+    Write-Host "[Info] Defender service state: $($defenderService.Status)"
+
+    # Try to start temporarily if stopped (so Set-MpPreference will work)
+    if ($defenderService.Status -ne 'Running') {
+        Write-Host "[Info] Attempting to start WinDefend service..."
+        try {
+            Set-Service -Name WinDefend -StartupType Manual
+            Start-Service -Name WinDefend -ErrorAction Stop
+            Start-Sleep -Seconds 10
+            Write-Host "[Info] WinDefend service started."
+            $startedDefender = $true
+        } catch {
+            Write-Warning "[Skip] Could not start WinDefend service: $($_.Exception.Message)"
+            $hasDefender = $false
+        }
+    }
+}
+
+if ($hasDefender) {
+    Write-Host "[Action] Applying Defender preferences..."
+
+    $avPreference = @(
     @{DisableArchiveScanning = $true}
     @{DisableAutoExclusions = $true}
     @{DisableBehaviorMonitoring = $true}
@@ -23,22 +56,46 @@ $avPreference = @(
     @{ScanAvgCPULoadFactor = 5; ExclusionPath = @("D:\", "C:\")}
     @{DisableRealtimeMonitoring = $true}
     @{ScanScheduleDay = 8}
-)
-
-$avPreference += @(
     @{EnableControlledFolderAccess = "Disable"}
     @{EnableNetworkProtection = "Disabled"}
-)
+    )
 
-$avPreference | Foreach-Object {
+   
+    $avPreference | Foreach-Object {
+    try{
     $avParams = $_
-    Set-MpPreference @avParams
-}
+    $keys = ($avParams.Keys -join ", ")
+    Set-MpPreference @avParams -ErrorAction Stop
+    Write-Host " ==> Applied: $keys"
+    } catch {
+            Write-Warning "  (!) Skipped '$keys' - $($_.Exception.Message)"
+        }
 
-# https://github.com/actions/runner-images/issues/4277
-# https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/microsoft-defender-antivirus-compatibility?view=o365-worldwide
+
+# Passive mode for MDE
 $atpRegPath = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows Advanced Threat Protection'
 if (Test-Path $atpRegPath) {
-    Write-Host "Set Microsoft Defender Antivirus to passive mode"
-    Set-ItemProperty -Path $atpRegPath -Name 'ForceDefenderPassiveMode' -Value '1' -Type 'DWORD'
+    Write-Host "[Action] Enabling Defender passive mode (MDE compatibility)..."
+    try {
+        Set-ItemProperty -Path $atpRegPath -Name 'ForceDefenderPassiveMode' -Value '1' -Type 'DWORD'
+        Write-Host " ==>  Passive mode enabled."
+    } catch {
+        Write-Warning "  (!) Failed to set passive mode: $($_.Exception.Message)"
+    }
+} else {
+    Write-Host "[Info] MDE policy path not found; skipping passive mode configuration."
 }
+
+# --- Restore service state ---
+if ($startedDefender) {
+    Write-Host "[Info] Stopping Defender service to restore original state..."
+    try {
+        Stop-Service -Name WinDefend -Force -ErrorAction SilentlyContinue
+        Set-Service -Name WinDefend -StartupType Disabled
+        Write-Host " ==>  Defender service stopped and disabled."
+    } catch {
+        Write-Warning "  (!) Could not stop Defender service: $($_.Exception.Message)"
+    }
+}
+
+Write-Host "=== Windows Defender configuration completed ==="
