@@ -32,7 +32,6 @@ build {
       "New-Item -Type Directory -Path '${var.helper_script_folder}\\TestsHelpers\\'",
       "Move-Item '${var.image_folder}\\scripts\\tests\\Helpers.psm1' '${var.helper_script_folder}\\TestsHelpers\\TestsHelpers.psm1'",
       "Move-Item '${var.image_folder}\\scripts\\tests' '${var.image_folder}\\tests'",
-      "Remove-Item -Recurse '${var.image_folder}\\scripts'",
       "Move-Item '${var.image_folder}\\toolsets\\toolset-2025.json' '${var.image_folder}\\toolset.json'",
       "Remove-Item -Recurse '${var.image_folder}\\toolsets'"
     ]
@@ -172,7 +171,7 @@ provisioner "powershell" {
       "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-ChocolateyPackages-.ps1'",
       "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-JavaTools-.ps1'",
       "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Kotlin-.ps1'",
-      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-OpenSSL.ps1"
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-OpenSSL.ps1'"
     ]
   }
 
