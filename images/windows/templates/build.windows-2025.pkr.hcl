@@ -94,10 +94,10 @@ provisioner "powershell" {
     environment_vars = ["IMAGE_VERSION=${var.image_version}", "IMAGE_OS=${var.image_os}", "AGENT_TOOLSDIRECTORY=${var.agent_tools_directory}", "IMAGEDATA_FILE=${var.imagedata_file}", "IMAGE_FOLDER=${var.image_folder}", "TEMP_DIR=${var.temp_dir}"]
     execution_policy = "unrestricted"
     inline          = [
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-WindowsDefender.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-PowerShell.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-PowerShellModules.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-WSL2.ps1'"
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-WindowsDefender.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-PowerShell.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-PowerShellModules.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-WSL2.ps1'"
     ]
   }
 
@@ -110,12 +110,12 @@ provisioner "powershell" {
     environment_vars = ["IMAGE_VERSION=${var.image_version}", "IMAGE_OS=${var.image_os}", "AGENT_TOOLSDIRECTORY=${var.agent_tools_directory}", "IMAGEDATA_FILE=${var.imagedata_file}", "IMAGE_FOLDER=${var.image_folder}", "TEMP_DIR=${var.temp_dir}"]
     execution_policy = "unrestricted"
     inline          = [
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-WindowsFeatures.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Chocolatey.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-BaseImage.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-ImageDataFile.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-SystemEnvironment.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-DotnetSecureChannel.ps1'"
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-WindowsFeatures.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Chocolatey.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-BaseImage.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-ImageDataFile.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-SystemEnvironment.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-DotnetSecureChannel.ps1'"
     ]
   }
 
@@ -132,12 +132,12 @@ provisioner "powershell" {
   provisioner "powershell" {
     environment_vars = ["IMAGE_FOLDER=${var.image_folder}", "TEMP_DIR=${var.temp_dir}"]
     inline          = [
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Docker.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-DockerWinCred.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-DockerCompose.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-PowershellCore.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-WebPlatformInstaller.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Runner.ps1'"
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Docker.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-DockerWinCred.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-DockerCompose.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-PowershellCore.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-WebPlatformInstaller.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Runner.ps1'"
     ]
   }
 
@@ -150,8 +150,8 @@ provisioner "powershell" {
     elevated_user     = "${var.install_user}"
     environment_vars  = ["IMAGE_FOLDER=${var.image_folder}", "TEMP_DIR=${var.temp_dir}"]
     inline           = [
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-VisualStudio.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-KubernetesTools.ps1'"
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-VisualStudio.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-KubernetesTools.ps1'"
     ]
     valid_exit_codes  = [0, 3010]
   }
@@ -165,21 +165,21 @@ provisioner "powershell" {
     pause_before     = "2m0s"
     environment_vars = ["IMAGE_FOLDER=${var.image_folder}", "TEMP_DIR=${var.temp_dir}"]
     inline          = [
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Wix-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-VSExtensions-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-AzureCli-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-AzureDevOpsCli-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-ChocolateyPackages-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-JavaTools-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Kotlin-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-OpenSSL.ps1"
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Wix-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-VSExtensions-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-AzureCli-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-AzureDevOpsCli-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-ChocolateyPackages-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-JavaTools-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Kotlin-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-OpenSSL.ps1"
     ]
   }
 
   provisioner "powershell" {
     execution_policy = "remotesigned"
     environment_vars = ["IMAGE_FOLDER=${var.image_folder}", "TEMP_DIR=${var.temp_dir}"]
-    inline          = ["& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-ServiceFabricSDK.ps1'"]
+    inline          = ["& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-ServiceFabricSDK.ps1'"]
   }
 
   provisioner "windows-restart" {
@@ -189,48 +189,48 @@ provisioner "powershell" {
   provisioner "powershell" {
     environment_vars = ["IMAGE_FOLDER=${var.image_folder}", "TEMP_DIR=${var.temp_dir}"]
     inline          = [
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-ActionsCache-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Ruby-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-PyPy-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Toolset-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-Toolset-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-NodeJS-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-AndroidSDK-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-PowershellAzModules-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Pipx-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Git-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-GitHub-CLI-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-PHP-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Rust-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Sbt-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Chrome-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-EdgeDriver-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Firefox-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Selenium-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-IEWebDriver-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Apache-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Nginx-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Msys2-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-WinAppDriver-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-R-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-AWSTools-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-DACFx-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-MysqlCli-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-SQLPowerShellTools-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-SQLOLEDBDriver-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-DotnetSDK-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Mingw64-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Haskell-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Stack-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Miniconda-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-AzureCosmosDbEmulator-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Zstd-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Vcpkg-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Bazel-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-RootCA-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-MongoDB-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-CodeQLBundle-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-Diagnostics.ps1'"
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-ActionsCache-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Ruby-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-PyPy-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Toolset-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-Toolset-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-NodeJS-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-AndroidSDK-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-PowershellAzModules-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Pipx-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Git-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-GitHub-CLI-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-PHP-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Rust-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Sbt-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Chrome-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-EdgeDriver-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Firefox-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Selenium-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-IEWebDriver-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Apache-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Nginx-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Msys2-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-WinAppDriver-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-R-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-AWSTools-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-DACFx-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-MysqlCli-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-SQLPowerShellTools-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-SQLOLEDBDriver-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-DotnetSDK-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Mingw64-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Haskell-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Stack-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Miniconda-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-AzureCosmosDbEmulator-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Zstd-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Vcpkg-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-Bazel-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-RootCA-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-MongoDB-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-CodeQLBundle-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-Diagnostics.ps1'"
     ]
   }
 
@@ -239,13 +239,13 @@ provisioner "powershell" {
     elevated_user     = "${var.install_user}"
     environment_vars  = ["IMAGE_FOLDER=${var.image_folder}", "TEMP_DIR=${var.temp_dir}"]
     inline           = [
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-PostgreSQL-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-WindowsUpdates-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-DynamicPort-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-GDIProcessHandleQuota-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-Shell-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-DeveloperMode-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-LLVM.ps1'"
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-PostgreSQL-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-WindowsUpdates-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-DynamicPort-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-GDIProcessHandleQuota-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-Shell-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-DeveloperMode-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-LLVM.ps1'"
     ]
   }
 
@@ -259,8 +259,8 @@ provisioner "powershell" {
     pause_before     = "2m0s"
     environment_vars = ["IMAGE_FOLDER=${var.image_folder}", "TEMP_DIR=${var.temp_dir}"]
     inline          = [
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-WindowsUpdatesAfterReboot-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Invoke-Cleanup-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-WindowsUpdatesAfterReboot-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Invoke-Cleanup-.ps1'",
       "& '${path.root}/../scripts/helpers/Invoke-WithRetry.ps1' -Script '${path.root}/../scripts/tests/RunAll-Tests.ps1'"
     ]
   }
@@ -293,10 +293,10 @@ provisioner "powershell" {
   provisioner "powershell" {
     environment_vars = ["INSTALL_USER=${var.install_user}"]
     inline          = [
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-NativeImages-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-System-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-User-.ps1'",
-      "& '${var.image_folder}\\scripts\\helpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Post-Build-Validation.ps1'"
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-NativeImages-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-System-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Configure-User-.ps1'",
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Post-Build-Validation.ps1'"
     ]
     skip_clean       = true
   }
