@@ -317,7 +317,7 @@
         "version": "8.4"
     },
     "postgresql": {
-        "version": "17"
+        "version": "17.6.2"
     },
     "kotlin": {
         "version": "latest"
