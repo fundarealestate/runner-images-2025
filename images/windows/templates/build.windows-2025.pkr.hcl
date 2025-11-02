@@ -260,7 +260,7 @@ provisioner "powershell" {
     inline          = [
       "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Install-WindowsUpdatesAfterReboot.ps1'",
       "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\build\\Invoke-Cleanup.ps1'",
-      "& '${path.root}/../scripts/helpers/Invoke-WithRetry.ps1' -Script '${path.root}/../scripts/tests/RunAll-Tests.ps1'"
+      "& '${var.helper_script_folder}\\ImageHelpers\\Invoke-WithRetry.ps1' -Script '${var.image_folder}\\scripts\\tests\\RunAll-Tests.ps1'"
     ]
   }
 
