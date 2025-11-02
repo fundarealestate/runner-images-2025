@@ -5,7 +5,7 @@ param(
 )
 
 # Define allowed exit codes that do not trigger a retry
-$AllowedExitCodes = @(0, 1, 3010)
+$AllowedExitCodes = @(0, 3010)
 
 for ($i = 1; $i -le $MaxRetries; $i++) {
     $exitCode = $null
