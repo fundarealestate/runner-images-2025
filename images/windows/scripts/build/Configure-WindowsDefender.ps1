@@ -36,9 +36,23 @@ if (-not (Test-IsWin11-Arm64)) {
     $avPreference += @{DisableBlockAtFirstSeen = $true}
 }
 
-$avPreference | Foreach-Object {
-    $avParams = $_
-    Set-MpPreference @avParams
+$defenderService = Get-Service -Name WinDefend -ErrorAction SilentlyContinue
+
+if (-not $defenderService) {
+    Write-Warning "Microsoft Defender service not found. Skipping preferences."
+}
+elseif ($defenderService.Status -ne 'Running') {
+    Write-Warning "Microsoft Defender service is $($defenderService.Status). Skipping preferences."
+}
+else {
+    foreach ($avParams in $avPreference) {
+        try {
+            Set-MpPreference @avParams -ErrorAction Stop
+        }
+        catch {
+            Write-Warning "Failed to configure Defender preference: $($_.Exception.Message)"
+        }
+    }
 }
 
 # https://github.com/actions/runner-images/issues/4277
