@@ -14,6 +14,27 @@ $ErrorActionPreference = 'Stop'
 # Use the PowerShellGet version installed by Configure-PowerShell.ps1
 $powerShellGetVersion = '2.2.5'
 
+$uri = 'https://www.powershellgallery.com/api/v2/package/PowerShellGet/2.2.5'
+$destination = Join-Path $env:TEMP 'PowerShellGet.2.2.5.nupkg'
+
+try {
+    Invoke-WebRequest `
+        -Uri $uri `
+        -OutFile $destination `
+        -UseBasicParsing `
+        -ErrorAction Stop
+
+    $file = Get-Item $destination
+    Write-Host "Direct download succeeded: $($file.Length) bytes"
+}
+catch {
+    Write-Warning "Direct download failed: $($_.Exception.Message)"
+
+    if ($_.Exception.Response) {
+        Write-Warning "HTTP status: $([int]$_.Exception.Response.StatusCode)"
+    }
+}
+
 Import-Module PowerShellGet `
     -RequiredVersion $powerShellGetVersion `
     -Force `
