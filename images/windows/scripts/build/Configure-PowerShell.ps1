@@ -14,10 +14,39 @@ Install-PackageProvider `
     -Force `
     -ErrorAction Stop
 
+# Initialize PowerShellGet
+Import-Module PowerShellGet -ErrorAction Stop
+
+# Ensure PSGallery is registered
+Write-Host "Checking PSGallery repository..."
+
+$repository = Get-PSRepository `
+    -Name PSGallery `
+    -ErrorAction SilentlyContinue
+
+if (-not $repository) {
+    Write-Host "PSGallery not found. Registering default repository..."
+
+    Register-PSRepository `
+        -Default `
+        -ErrorAction Stop
+}
+
+# Verify repository registration
+$repository = Get-PSRepository `
+    -Name PSGallery `
+    -ErrorAction Stop
+
+Write-Host "PSGallery registered: $($repository.SourceLocation)"
+
 # Configure PSGallery
 Set-PSRepository `
     -Name PSGallery `
-    -InstallationPolicy Trusted
+    -InstallationPolicy Trusted `
+    -ErrorAction Stop
+
+Get-PSRepository -Name PSGallery |
+    Format-List Name, SourceLocation, InstallationPolicy
 
 # Pin the tested PowerShellGet version
 $powerShellGetVersion = '2.2.5'
@@ -47,13 +76,13 @@ Get-Module PowerShellGet |
 
 # Verify that 2.2.5 is loaded
 $loadedModule = Get-Module PowerShellGet |
-    Where-Object { $_.Version -eq [version]'2.2.5' }
+    Where-Object { $_.Version -eq [version]$powerShellGetVersion }
 
 if (-not $loadedModule) {
-    throw "PowerShellGet 2.2.5 is not loaded"
+    throw "PowerShellGet $powerShellGetVersion is not loaded"
 }
 
-Write-Host "PowerShellGet 2.2.5 successfully loaded"
+Write-Host "PowerShellGet $powerShellGetVersion successfully loaded"
 
 # Verify the version used by Install-Module
 Write-Host "Verifying Install-Module command..."
@@ -63,8 +92,8 @@ $installModuleCommand = Get-Command Install-Module -ErrorAction Stop
 Write-Host "Install-Module version: $($installModuleCommand.Version)"
 Write-Host "Install-Module source: $($installModuleCommand.Source)"
 
-if ($installModuleCommand.Version -ne [version]'2.2.5') {
-    throw "Install-Module is using PowerShellGet $($installModuleCommand.Version), expected 2.2.5"
+if ($installModuleCommand.Version -ne [version]$powerShellGetVersion) {
+    throw "Install-Module is using PowerShellGet $($installModuleCommand.Version), expected $powerShellGetVersion"
 }
 
-Write-Host "PowerShellGet 2.2.5 is active and ready"
+Write-Host "PowerShellGet $powerShellGetVersion is active and ready"
