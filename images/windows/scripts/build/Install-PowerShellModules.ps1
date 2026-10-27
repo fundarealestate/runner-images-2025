@@ -35,6 +35,49 @@ catch {
     }
 }
 
+$powerShellGetVersion = '2.2.5'
+$maxAttempts = 5
+
+if (Get-Module -ListAvailable -Name PowerShellGet |
+    Where-Object { $_.Version -eq [version]$powerShellGetVersion }) {
+
+    Write-Host "PowerShellGet $powerShellGetVersion is already installed"
+}
+else {
+    for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+        try {
+            Write-Host "Installing PowerShellGet $powerShellGetVersion (attempt $attempt/$maxAttempts)"
+
+            Install-Module `
+                -Name PowerShellGet `
+                -RequiredVersion $powerShellGetVersion `
+                -Repository PSGallery `
+                -Scope AllUsers `
+                -Force `
+                -AllowClobber `
+                -ErrorAction Stop
+
+            if (-not (Get-Module -ListAvailable -Name PowerShellGet |
+                Where-Object { $_.Version -eq [version]$powerShellGetVersion })) {
+                throw "PowerShellGet $powerShellGetVersion not found after installation"
+            }
+
+            break
+        }
+        catch {
+            Write-Warning "Attempt $attempt failed: $($_.Exception.Message)"
+
+            if ($attempt -eq $maxAttempts) {
+                throw
+            }
+
+            $delay = 10 * $attempt
+            Write-Host "Retrying in $delay seconds..."
+            Start-Sleep -Seconds $delay
+        }
+    }
+}
+
 Import-Module PowerShellGet `
     -RequiredVersion $powerShellGetVersion `
     -Force `
