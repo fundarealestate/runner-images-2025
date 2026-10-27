@@ -4,7 +4,7 @@
 ################################################################################
 
 Write-Host "Cleanup WinSxS"
-dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
+dism.exe /online /Cleanup-Image /StartComponentCleanup 
 if ($LASTEXITCODE -ne 0) {
     throw "Failed to cleanup WinSxS"
 }
