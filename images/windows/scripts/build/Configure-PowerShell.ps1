@@ -1,38 +1,49 @@
-################################################################################
-##  File:  Configure-Powershell.ps1
-##  Desc:  Manage PowerShell configuration
-################################################################################
-
-#region System
 Write-Host "Setup PowerShellGet"
-Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 
-# Specifies the installation policy
-Set-PSRepository -InstallationPolicy Trusted -Name PSGallery
+$ErrorActionPreference = 'Stop'
 
-Write-Host 'Warmup PSModuleAnalysisCachePath (speedup first powershell invocation by 20s)'
-$PSModuleAnalysisCachePath = 'C:\PSModuleAnalysisCachePath\ModuleAnalysisCache'
+# Ensure TLS 1.2
+[Net.ServicePointManager]::SecurityProtocol = `
+    [Net.ServicePointManager]::SecurityProtocol -bor `
+    [Net.SecurityProtocolType]::Tls12
 
-[Environment]::SetEnvironmentVariable('PSModuleAnalysisCachePath', $PSModuleAnalysisCachePath, "Machine")
-# make variable to be available in the current session
-${env:PSModuleAnalysisCachePath} = $PSModuleAnalysisCachePath
+# Install NuGet package provider
+Install-PackageProvider `
+    -Name NuGet `
+    -MinimumVersion 2.8.5.201 `
+    -Force `
+    -ErrorAction Stop
 
-New-Item -Path $PSModuleAnalysisCachePath -ItemType 'File' -Force | Out-Null
-#endregion
+# Configure PSGallery
+Set-PSRepository `
+    -Name PSGallery `
+    -InstallationPolicy Trusted
 
-#region User (current user, image generation only)
-if (-not (Test-Path $profile)) {
-    New-Item $profile -ItemType File -Force
+# Pin the tested PowerShellGet version
+$powerShellGetVersion = '2.2.5'
+
+Write-Host "Installing PowerShellGet $powerShellGetVersion"
+
+Install-Module `
+    -Name PowerShellGet `
+    -RequiredVersion $powerShellGetVersion `
+    -Repository PSGallery `
+    -Scope AllUsers `
+    -Force `
+    -AllowClobber `
+    -ErrorAction Stop
+
+# Explicitly load the installed version
+Import-Module PowerShellGet `
+    -RequiredVersion $powerShellGetVersion `
+    -Force `
+    -ErrorAction Stop
+
+# Verify active version
+$loadedVersion = (Get-Module PowerShellGet).Version.ToString()
+
+Write-Host "Active PowerShellGet version: $loadedVersion"
+
+if ($loadedVersion -ne $powerShellGetVersion) {
+    throw "Incorrect PowerShellGet version: $loadedVersion"
 }
-  
-@" 
-  if ( -not(Get-Module -ListAvailable -Name PowerHTML)) {
-      Install-Module PowerHTML -Scope CurrentUser 
-  } 
-  
-  if ( -not(Get-Module -Name PowerHTML)) {
-      Import-Module PowerHTML
-  } 
-"@ | Add-Content -Path $profile -Force
-
-#endregion

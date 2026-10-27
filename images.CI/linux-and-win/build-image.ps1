@@ -49,8 +49,8 @@ packer plugins install github.com/hashicorp/azure $pluginVersion
 Write-Host "Validate packer template"
 packer validate -syntax-only -only "$buildName.*" $TemplatePath
 
-export PACKER_LOG=1
-export PACKER_LOG_PATH=packer-debug.log
+#export PACKER_LOG=1
+#export PACKER_LOG_PATH=packer-debug.log
 
 Write-Host "Build $buildName VM"
 packer build    -only "$buildName.*" `
@@ -79,4 +79,4 @@ packer build    -only "$buildName.*" `
             $sensitiveString -eq $null
         }
 
-Get-Content packer-debug.log -Tail 100
+#Get-Content packer-debug.log -Tail 100
