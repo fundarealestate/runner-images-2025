@@ -18,6 +18,11 @@ if (-not (Test-Path -LiteralPath $installPSModulePath)) {
     [Net.ServicePointManager]::SecurityProtocol -bor `
     [Net.SecurityProtocolType]::Tls12
 
+Import-Module PowerShellGet `
+-RequiredVersion '2.2.5' `
+-Force `
+-ErrorAction Stop
+
 # Get modules content from toolset
 $modules = (Get-ToolsetContent).azureModules
 
