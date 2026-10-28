@@ -76,15 +76,35 @@ $toolsetVersions = Get-ToolsetContent | Select-Object -ExpandProperty toolcache 
 $pypyVersions = Invoke-RestMethod https://downloads.python.org/pypy/versions.json
 
 # required for html parsing
-$checksums = (Invoke-RestMethod -Uri 'https://www.pypy.org/checksums.html' | ConvertFrom-HTML).SelectNodes('//*[@id="content"]/article/div/pre')
+#$checksums = (Invoke-RestMethod -Uri 'https://www.pypy.org/checksums.html' | ConvertFrom-HTML).SelectNodes('//*[@id="content"]/article/div/pre')
+
+#region Supply chain security
+
+$distributorFileHash = $latestMajorPyPyVersion.sha256
+
+if ([string]::IsNullOrWhiteSpace($distributorFileHash)) {
+    throw "SHA256 checksum is missing from PyPy release metadata for '$filename'"
+}
+
+Write-Host "Validating SHA256 checksum for '$filename'"
+
+Test-FileChecksum `
+    $tempPyPyPackagePath `
+    -ExpectedSHA256Sum $distributorFileHash
+
+#endregion
 
 Write-Host "Start PyPy installation"
 foreach ($toolsetVersion in $toolsetVersions.versions) {
     # Query latest PyPy version
     $latestMajorPyPyVersion = $pypyVersions |
-        Where-Object { $_.python_version.StartsWith("$toolsetVersion") -and $_.stable -eq $true } |
-        Select-Object -ExpandProperty files -First 1 |
-        Where-Object platform -like "win*"
+    Where-Object {
+        $_.python_version.StartsWith("$toolsetVersion") -and
+        $_.stable -eq $true
+    } |
+    Select-Object -ExpandProperty files |
+    Where-Object { $_.platform -like 'win*' } |
+    Select-Object -First 1
     
     if (-not $latestMajorPyPyVersion) {
         throw "Failed to query PyPy version '$toolsetVersion'"
